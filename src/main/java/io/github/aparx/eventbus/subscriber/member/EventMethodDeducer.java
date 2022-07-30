@@ -15,8 +15,7 @@ import java.lang.reflect.Modifier;
  */
 public interface EventMethodDeducer<T extends Event> {
 
-    EventMethodDeducer<?> FIRST_PARAMETER = newDeducer(Event.class,
-            (origin, event) -> new Object[]{event}, 0, Modifier.STATIC);
+    EventMethodDeducer<?> FIRST_PARAMETER = newFirstParameterDeducer(Event.class);
 
     boolean isEventMethod(@NonNull Method method);
 
@@ -28,6 +27,7 @@ public interface EventMethodDeducer<T extends Event> {
 
     /* Global factory methods and variables */
 
+    @NonNull
     static <T extends Event> EventMethodDeducer<? extends T> newDeducer(
             final @NonNull Class<? extends T> eventParamBaseType,
             final @NonNull InvocationArgumentFactory<? super T> argsFactory,
@@ -66,12 +66,19 @@ public interface EventMethodDeducer<T extends Event> {
         };
     }
 
+    @NonNull
     static <T extends Event> EventMethodDeducer<? extends T> newDeducer(
             final @NonNull Class<? extends T> eventParamBaseType,
             final @NonNull InvocationArgumentFactory<T> argsFactory,
             final int eventParamIndex) {
         // Allocates a new deducer with no disallowed modifiers
         return newDeducer(eventParamBaseType, argsFactory, eventParamIndex, 0);
+    }
+
+    @NonNull
+    static <T extends Event> EventMethodDeducer<? extends T> newFirstParameterDeducer(
+            final @NonNull Class<? extends T> eventParamBaseType) {
+        return newDeducer(eventParamBaseType, (origin, event) -> new Object[]{event}, 0, Modifier.STATIC);
     }
 
 }

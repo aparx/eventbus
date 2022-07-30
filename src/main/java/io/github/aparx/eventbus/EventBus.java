@@ -3,6 +3,7 @@ package io.github.aparx.eventbus;
 import com.google.common.base.Preconditions;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.github.aparx.eventbus.audience.ListenerHandle;
+import io.github.aparx.eventbus.processor.EventProcessors;
 import io.github.aparx.eventbus.processor.EventPublisher;
 import io.github.aparx.eventbus.processor.SubscriberCollector;
 import org.checkerframework.checker.index.qual.NonNegative;
@@ -25,6 +26,12 @@ public class EventBus implements ListenerRegister {
 
     final @NonNull EventPublisher publisher;
     final @NonNull SubscriberCollector<?> collector;
+
+
+    public EventBus() {
+        this(EventProcessors.newPolymorphicPublisher(),
+                EventProcessors.newDefaultMethodCollector());
+    }
 
     public EventBus(
             @NonNull EventPublisher publisher,

@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 @FunctionalInterface
 public interface MethodSubscriberFactory<
         T extends Event,
-        R extends ClassMemberEventSubscriber<T, Method>> {
+        R extends ClassMemberEventSubscriber<? extends T, Method>> {
 
     @NonNull
     R newSubscriber(Class<? extends T> eventType,

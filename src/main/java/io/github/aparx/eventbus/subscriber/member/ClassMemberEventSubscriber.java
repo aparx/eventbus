@@ -14,7 +14,6 @@ import java.lang.reflect.Member;
 public abstract class ClassMemberEventSubscriber<
         U extends Event, V extends Member>
         extends EventSubscriber<U> {
-
     public ClassMemberEventSubscriber(@NonNull Class<? extends U> eventType) {
         super(eventType);
     }

@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author aparx (Vinzent Zeband)
@@ -72,7 +73,7 @@ public final class EventSubscribers {
 
     @NonNull
     public static <T extends Event>
-    ClassMemberEventSubscriber<? extends T, Method> newMethodSubscriber(
+    ClassMemberEventSubscriber<T, Method> newMethodSubscriber(
             final @NonNull EventMethodDeducer<? super T> deducer,
             final @NonNull Method method) {
         return newMethodSubscriber(deducer, deducer::newEventCallback, method);
