@@ -5,6 +5,17 @@ Simple and lightweight eventbus library for the Java language.
 ## Documentation
 The documentation follows.
 
+### Example
+```java
+        EventBus bus = new EventBus(
+                EventProcessors.newPolymorphicPublisher(),
+                EventProcessors.newDefaultMethodCollector());
+        bus.register(new TestListener());
+        bus.publish(new PolymorphicEvent(0, "Hello!"));
+```
+* A method within `TestListener` must have one parameter only, being of type `Event`<br>and not static.
+As initially stated, ***everything*** can be customized and is modular.
+
 ## WARNING❗
 This library is not production nor test ready at all. Not even core functions are implemented yet.
 <br/>Please wait until a stable alpha or even version is pre-released.
