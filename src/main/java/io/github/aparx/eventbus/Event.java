@@ -1,7 +1,7 @@
 package io.github.aparx.eventbus;
 
 /**
- * Class {@code Event} is the root of all publishable events whose are
+ * Class {@code Event} is the root of all publishable events that are
  * applicable to {@code EventCallback} abstractions.
  * <p>The root is necessary, in order for certain event processors to
  * identify whenever the root of an event has been hit. The {@code Event}
