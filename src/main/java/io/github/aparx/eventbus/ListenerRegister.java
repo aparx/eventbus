@@ -2,7 +2,7 @@ package io.github.aparx.eventbus;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.github.aparx.eventbus.audience.ListenerHandle;
-import io.github.aparx.eventbus.subscriber.entities.SubscriberCollection;
+import io.github.aparx.eventbus.subscriber.SubscriberCollection;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

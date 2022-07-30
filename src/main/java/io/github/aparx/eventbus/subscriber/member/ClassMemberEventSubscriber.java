@@ -1,6 +1,7 @@
-package io.github.aparx.eventbus.subscriber.entities;
+package io.github.aparx.eventbus.subscriber.member;
 
 import io.github.aparx.eventbus.Event;
+import io.github.aparx.eventbus.subscriber.EventSubscriber;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.reflect.Member;

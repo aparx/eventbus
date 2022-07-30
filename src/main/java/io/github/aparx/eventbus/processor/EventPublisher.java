@@ -2,7 +2,7 @@ package io.github.aparx.eventbus.processor;
 
 import io.github.aparx.eventbus.Event;
 import io.github.aparx.eventbus.audience.ListenerHandle;
-import io.github.aparx.eventbus.subscriber.entities.EventSubscriber;
+import io.github.aparx.eventbus.subscriber.EventSubscriber;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

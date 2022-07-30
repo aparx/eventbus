@@ -1,4 +1,4 @@
-package io.github.aparx.eventbus.subscriber.entities;
+package io.github.aparx.eventbus.subscriber;
 
 import com.google.common.base.Preconditions;
 import com.google.errorprone.annotations.CompatibleWith;

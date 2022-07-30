@@ -4,13 +4,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.github.aparx.eventbus.Event;
-import io.github.aparx.eventbus.subscriber.entities.EventSubscriber;
-import io.github.aparx.eventbus.subscriber.entities.SortableSubscriberCollection;
-import io.github.aparx.eventbus.subscriber.entities.SubscriberCollection;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -30,34 +26,67 @@ public final class SubscriberCollections {
 
     /* Sorted SubscriberCollection factory methods */
 
+    @NonNull
+    public static <T extends Event, E extends EventSubscriber<? extends T>>
+    SortableSubscriberCollection<T, E> newSortableOfMultimap(
+            @NonNull MultimapFactory<ListMultimap<Class<? extends T>, E>> factory) {
+        return newSortableOfMultimap(factory.newMultimap(), factory, null);
+    }
+
+    @NonNull
+    public static <T extends Event, E extends EventSubscriber<? extends T>>
+    SortableSubscriberCollection<T, E> newSortableOfMultimap(
+            @NonNull ListMultimap<Class<? extends T>, E> delegate,
+            @NonNull MultimapFactory<ListMultimap<Class<? extends T>, E>> factory) {
+        return newSortableOfMultimap(delegate, factory, null);
+    }
+
+    @NonNull
+    public static <T extends Event, E extends EventSubscriber<? extends T>>
+    SortableSubscriberCollection<T, E> newSortableOfMultimap(
+            @NonNull MultimapFactory<ListMultimap<Class<? extends T>, E>> factory,
+            @Nullable Comparator<? super E> comparator) {
+        return newSortableOfMultimap(factory.newMultimap(), factory, comparator);
+    }
+
+    @NonNull
+    public static <T extends Event, E extends EventSubscriber<? extends T>>
+    SortableSubscriberCollection<T, E> newSortableOfMultimap(
+            @NonNull ListMultimap<Class<? extends T>, E> delegate,
+            @NonNull MultimapFactory<ListMultimap<Class<? extends T>, E>> factory,
+            @Nullable Comparator<? super E> comparator) {
+        return new SortableCollection<>(delegate, factory, comparator);
+    }
+
     /* Unsorted SubscriberCollection factory methods */
 
     @NonNull
     public static <T extends Event, E extends EventSubscriber<? extends T>>
-    SubscriberCollection<T, E> newOfMultimapFactory(@NonNull MultimapFactory factory) {
-        return newOfMultimap(factory.newMap(), factory);
+    SubscriberCollection<T, E> newOfMultimapFactory(
+            @NonNull MultimapFactory<? extends Multimap<Class<? extends T>, E>> factory) {
+        return newOfMultimap(factory.newMultimap(), factory);
     }
 
     @NonNull
     public static <T extends Event, E extends EventSubscriber<? extends T>>
     SubscriberCollection<T, E> newOfListMultimap(
             @NonNull ListMultimap<@NonNull Class<? extends T>, @NonNull E> delegate) {
-        return newOfMultimap(delegate, MultimapFactory.UNSORTED_ARRAYLIST);
+        return newOfMultimap(delegate, MultimapFactory.newUnsortedArraylist());
     }
 
     @NonNull
     public static <T extends Event, E extends EventSubscriber<? extends T>>
     SubscriberCollection<T, E> newOfSetMultimap(
             @NonNull SetMultimap<@NonNull Class<? extends T>, @NonNull E> delegate) {
-        return newOfMultimap(delegate, MultimapFactory.UNSORTED_HASHSET);
+        return newOfMultimap(delegate, MultimapFactory.newUnsortedHashset());
     }
 
     @NonNull
     public static <T extends Event, E extends EventSubscriber<? extends T>>
     SubscriberCollection<T, E> newOfMultimap(
             @NonNull Multimap<@NonNull Class<? extends T>, @NonNull E> delegate,
-            @NonNull MultimapFactory multimapFactory) {
-        return new MultimapCollection<>(delegate, multimapFactory);
+            @NonNull MultimapFactory<? extends Multimap<Class<? extends T>, E>> multimapFactory) {
+        return new BaseCollection<>(delegate, multimapFactory);
     }
 
 
@@ -65,47 +94,48 @@ public final class SubscriberCollections {
      * Functional factory interface used to generically allocate new
      * {@code Multimap} instances based upon the types given.
      */
-    public interface MultimapFactory {
-        MultimapFactory UNSORTED_HASHSET = MultimapFactory.ofTypeErased(
+    public interface MultimapFactory<T extends Multimap<?, ?>> {
+        MultimapFactory<?> UNSORTED_HASHSET = MultimapFactory.typeErased(
                 () -> Multimaps.newSetMultimap(new Hashtable<>(), HashSet::new));
 
-        MultimapFactory UNSORTED_ARRAYLIST = MultimapFactory.ofTypeErased(
+        MultimapFactory<?> UNSORTED_ARRAYLIST = MultimapFactory.typeErased(
                 () -> Multimaps.newListMultimap(new Hashtable<>(), ArrayList::new));
 
-        @NonNull
-        static MultimapFactory ofTypeErased(@NonNull Supplier<
-                @NonNull Multimap<@NonNull ?, @NonNull ?>> delegate) {
-            Preconditions.checkNotNull(delegate);
-            return new MultimapFactory() {
-                @Override
-                @SuppressWarnings("unchecked")
-                public <T extends Event, E extends EventSubscriber<? extends T>>
-                @NonNull Multimap<@NonNull Class<? extends T>, @NonNull E> newMap() {
-                    return (Multimap<Class<? extends T>, E>)
-                            Preconditions.checkNotNull(delegate.get());
-                }
-            };
+        @SuppressWarnings("unchecked")
+        static <K, V> MultimapFactory<SetMultimap<K, V>> newUnsortedHashset() {
+            return (MultimapFactory<SetMultimap<K, V>>) UNSORTED_HASHSET;
         }
 
-        @NonNull <T extends Event, E extends EventSubscriber<? extends T>>
-        Multimap<@NonNull Class<? extends T>, @NonNull E> newMap();
+        @SuppressWarnings("unchecked")
+        static <K, V> MultimapFactory<ListMultimap<K, V>> newUnsortedArraylist() {
+            return (MultimapFactory<ListMultimap<K, V>>) UNSORTED_ARRAYLIST;
+        }
+
+        static <V extends Multimap<?, ?>>
+        MultimapFactory<V> typeErased(@NonNull Supplier<V> factory) {
+            Preconditions.checkNotNull(factory);
+            return () -> (V) factory.get();
+        }
+
+        T newMultimap();
+
     }
 
     /* SubscriberCollection class definition */
 
-    public static class MultimapCollection<
+    static class BaseCollection<
             T extends Event,
             E extends EventSubscriber<? extends T>>
             implements SubscriberCollection<T, E> {
 
         final @NonNull Multimap<@NonNull Class<? extends T>, @NonNull E> delegate;
-        final @NonNull MultimapFactory multimapFactory;
+        final @NonNull MultimapFactory<?> mapFactory;
 
-        public MultimapCollection(
+        public BaseCollection(
                 @NonNull Multimap<@NonNull Class<? extends T>, @NonNull E> delegate,
-                @NonNull MultimapFactory multimapFactory) {
+                @NonNull MultimapFactory<?> multimapFactory) {
             this.delegate = Preconditions.checkNotNull(delegate);
-            this.multimapFactory = Preconditions.checkNotNull(multimapFactory);
+            this.mapFactory = Preconditions.checkNotNull(multimapFactory);
         }
 
         @Override
@@ -117,21 +147,21 @@ public final class SubscriberCollections {
             // Time complexity is roughly equal to O(n)
             Preconditions.checkNotNull(baseEventType);
             Preconditions.checkNotNull(baseSubscriberType);
-            Multimap<Class<? extends T>, ?> thisMap = asMultimap();
-            Multimap<Class<? extends _T>, _E> outMap = multimapFactory.newMap();
+            final Multimap<Class<? extends T>, ?> thisMap = asMultimap();
+            var out = (Multimap<Class<? extends _T>, _E>) mapFactory.newMultimap();
             // We iterate over every current pair first and determine
             // whether they are type compatible with our query input
             for (var e : thisMap.entries()) {
                 if (!baseEventType.isAssignableFrom(e.getKey())) continue;
                 if (!baseSubscriberType.isInstance(e.getValue())) continue;
-                outMap.put((Class<? extends _T>) e.getKey(), (_E) e.getValue());
+                out.put((Class<? extends _T>) e.getKey(), (_E) e.getValue());
             }
-            return new MultimapCollection<>(outMap, multimapFactory);
+            return new BaseCollection<>(out, mapFactory);
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public @NonNull Collection<? extends E> get(@NonNull Class<? extends Event> eventType) {
+        public @NonNull Collection<? extends E> getGroup(@NonNull Class<? extends Event> eventType) {
             try {
                 // First we try and cast the type to the necessary type
                 return delegate.get((Class<? extends T>) eventType);
@@ -140,7 +170,7 @@ public final class SubscriberCollections {
         }
 
         @Override
-        public @NonNull Collection<E> getAll() {
+        public @NonNull Collection<E> getGroups() {
             return delegate.values();
         }
 
@@ -167,7 +197,7 @@ public final class SubscriberCollections {
         @NonNull
         @Override
         public Iterator<E> iterator() {
-            return getAll().iterator();
+            return getGroups().iterator();
         }
 
         @Override
@@ -232,7 +262,7 @@ public final class SubscriberCollections {
             // group. This will boost performance drastically if many
             // elements are removed, as each individual group is batch
             // removed.
-            Multimap<Class<? extends T>, E> groups = multimapFactory.newMap();
+            var groups = (Multimap<Class<? extends T>, E>) mapFactory.newMultimap();
             while (rItr.hasNext()) {
                 Object rhs = rItr.next();
                 if (lCon.contains(rhs) == cmp) {
@@ -259,18 +289,18 @@ public final class SubscriberCollections {
         }
     }
 
-    private static class SortedImpl<
+    static class SortableCollection<
             T extends Event,
             E extends EventSubscriber<? extends T>>
-            extends MultimapCollection<T, E>
+            extends BaseCollection<T, E>
             implements SortableSubscriberCollection<T, E> {
 
         @NonNull
         private final Comparator<? super E> baseComparator;
 
-        public SortedImpl(
-                @NonNull Multimap<@NonNull Class<? extends T>, @NonNull E> map,
-                @NonNull MultimapFactory multimapFactory,
+        public SortableCollection(
+                @NonNull ListMultimap<@NonNull Class<? extends T>, @NonNull E> map,
+                @NonNull MultimapFactory<? extends ListMultimap<Class<? extends T>, E>> multimapFactory,
                 @Nullable Comparator<? super E> comparator) {
             super(map, multimapFactory);
             this.baseComparator = comparator == null
@@ -284,7 +314,11 @@ public final class SubscriberCollections {
 
         @Override
         public void sort(@NonNull Comparator<? super E> comparator) {
-
+            // O(m*(n log n))
+            // Sorts every individual event group
+            for (final Class<? extends T> k : delegate.keySet()) {
+                ((List<? extends E>) delegate.get(k)).sort(comparator);
+            }
         }
 
     }

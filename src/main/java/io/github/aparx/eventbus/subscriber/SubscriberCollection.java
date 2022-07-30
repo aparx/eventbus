@@ -1,4 +1,4 @@
-package io.github.aparx.eventbus.subscriber.entities;
+package io.github.aparx.eventbus.subscriber;
 
 import com.google.common.collect.Multimap;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -31,11 +31,11 @@ public interface SubscriberCollection<
     // <= O(log n)
     @NonNull
     @Contract(pure = true)
-    Collection<@NonNull ? extends E> get(@NonNull Class<? extends Event> eventType);
+    Collection<@NonNull ? extends E> getGroup(@NonNull Class<? extends Event> eventType);
 
     // <= O(n)
     @Contract(pure = true)
-    @NonNull Collection<@NonNull E> getAll();
+    @NonNull Collection<@NonNull E> getGroups();
 
     // <= O(1)
     @Contract(pure = true)
@@ -55,13 +55,13 @@ public interface SubscriberCollection<
 
     @NonNull
     @Contract(pure = true)
-    default Collection<@NonNull ? extends E> get(@CompatibleWith("T") @NonNull Event event) {
+    default Collection<@NonNull ? extends E> getGroup(@CompatibleWith("T") @NonNull Event event) {
         // This method is essentially existing to hint third parties on
         // static code analysis that `event` can be of any type, but to
         // get a valid result it needs to be of `T` as this collection
         // only stores subscribers with an event-type type-compatible
         // with `T`.
-        return get(event.getClass());
+        return getGroup(event.getClass());
     }
 
     @Override
@@ -72,13 +72,13 @@ public interface SubscriberCollection<
     @NonNull
     @Override
     default Object[] toArray() {
-        return getAll().toArray();
+        return getGroups().toArray();
     }
 
     @NonNull
     @Override
     default <T> T[] toArray(@NonNull T[] a) {
-        return getAll().toArray(a);
+        return getGroups().toArray(a);
     }
 
     @Override

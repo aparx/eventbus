@@ -2,15 +2,9 @@ package io.github.aparx.eventbus.subscriber;
 
 import io.github.aparx.eventbus.Event;
 import io.github.aparx.eventbus.audience.ListenerHandle;
-import io.github.aparx.eventbus.subscriber.entities.EventSubscriber;
-import io.github.aparx.eventbus.subscriber.entities.SubscriberCollection;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
 import org.junit.jupiter.api.*;
 
-import java.io.ObjectInputFilter;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * @author aparx (Vinzent Zeband)
@@ -31,7 +25,7 @@ public class SubscriberCollectionsTests {
     static TestSubscriber F = new TestSubscriber();
     static SubscriberCollection<Event, EventSubscriber<? extends Event>> CON
             = SubscriberCollections.newOfMultimapFactory(
-            SubscriberCollections.MultimapFactory.UNSORTED_HASHSET);
+            SubscriberCollections.MultimapFactory.newUnsortedHashset());
 
     static class TestSubscriber extends EventSubscriber<TestEvent> {
 
@@ -112,7 +106,7 @@ public class SubscriberCollectionsTests {
     @Test
     @Order(8)
     public void test_removeAll2() {
-        Assertions.assertTrue(CON.removeAll(CON.getAll()));
+        Assertions.assertTrue(CON.removeAll(CON.getGroups()));
         Assertions.assertFalse(CON.contains(A));
         Assertions.assertFalse(CON.contains(B));
         Assertions.assertFalse(CON.contains(C));
@@ -181,16 +175,16 @@ public class SubscriberCollectionsTests {
 
     @Test
     @Order(14)
-    public void test_get() {
+    public void test_getGroup() {
         test_clear();
         test_add();
         Assertions.assertTrue(CON.add(E));
-        var coll1 = CON.get(TestEvent.class);
+        var coll1 = CON.getGroup(TestEvent.class);
         Assertions.assertFalse(coll1.isEmpty());
         Assertions.assertEquals(1, coll1.size());
         Assertions.assertTrue(coll1.contains(E));
         Assertions.assertFalse(coll1.containsAll(Arrays.asList(A, B, C, D)));
-        var coll2 = CON.get(Event.class);
+        var coll2 = CON.getGroup(Event.class);
         Assertions.assertFalse(coll2.isEmpty());
         Assertions.assertEquals(4, coll2.size());
         Assertions.assertTrue(coll2.containsAll(Arrays.asList(A, B, C, D)));
