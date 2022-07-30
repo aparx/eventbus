@@ -16,8 +16,23 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * Defining {@code ListenerRegister} implementation, being a facade that
+ * contains event processors and a {@code ListenerHandle} table.
+ * <p>An eventbus is usually used to collect subscribers and publish
+ * events to subscribers being able of accepting an event being posted. It
+ * is also a register of handles, meaning that it takes care of caching
+ * {@code ListenerHandle} instances that are associated to their owner.
+ * <p>An instance of {@code EventBus} consists of at least two processors,
+ * being {@link EventPublisher} and {@link SubscriberCollector}.
+ *
  * @author aparx (Vinzent Zeband)
  * @version 16:10 CET, 27.07.2022
+ * @see ListenerRegister
+ * @see ListenerHandle
+ * @see EventPublisher
+ * @see SubscriberCollector
+ * @see EventProcessors
+ * @see io.github.aparx.eventbus.subscriber.EventSubscriber
  * @since 1.0
  */
 public class EventBus implements ListenerRegister {

@@ -10,7 +10,7 @@ package io.github.aparx.eventbus;
  * to provide type-safety without having to rely on third-parties on
  * actually passing the right object. It will hint the developers that a
  * {@code Listener} cannot be an {@code Event} simultaneously, thus
- * creating the possibility for static-analysis-tools to identify an
+ * creating the possibility for static analysis tools to identify an
  * inheritance-meaning-clash.
  *
  * @author aparx (Vinzent Zeband)

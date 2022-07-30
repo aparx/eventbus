@@ -22,8 +22,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
+ * Class {@code EventProcessors} is representing a class of default event
+ * processor implementations and factory methods for those.
+ *
  * @author aparx (Vinzent Zeband)
  * @version 15:28 CET, 30.07.2022
+ * @see EventPublisher
+ * @see SubscriberCollector
  * @since 1.0
  */
 public final class EventProcessors {
@@ -62,9 +67,10 @@ public final class EventProcessors {
             Preconditions.checkNotNull(event);
             Class<? extends Event> eventType = event.getClass();
             SubscriberCollection<?, ?> col = scope.getSubscribers();
-            for (Collection<? extends EventSubscriber<?>> subs;;) {
+            for (Collection<? extends EventSubscriber<?>> subs; ; ) {
                 subs = col.getGroup(eventType);
-                l0: for (EventSubscriber<?> s : subs) {
+                l0:
+                for (EventSubscriber<?> s : subs) {
                     // Check if `s` is wanted, if not, skip iteration
                     if (filters != null && !filters.isEmpty()) {
                         for (var filter : filters) {
@@ -99,8 +105,8 @@ public final class EventProcessors {
 
     @SuppressWarnings("unchecked")
     private static <T extends Event, E extends EventSubscriber<? extends T>>
-    Supplier<SubscriberCollection<? super T, ? super E>> getCollectionFactory() {
-        return (Supplier<SubscriberCollection<? super T, ? super E>>) DEFAULT_COLLECTION_FACTORY;
+    Supplier<SubscriberCollection<? super T, E>> getCollectionFactory() {
+        return (Supplier<SubscriberCollection<? super T, E>>) DEFAULT_COLLECTION_FACTORY;
     }
 
     private static SubscriberCollection<?, ?> newTypeErasedSubscriberCollection() {
@@ -135,7 +141,7 @@ public final class EventProcessors {
     public static <T extends Event>
     SubscriberCollector<ClassMemberEventSubscriber<T, Method>> newDefaultMethodCollector(
             final @NonNull Supplier<@NonNull SubscriberCollection<
-                    ? super T, ? super ClassMemberEventSubscriber<T, Method>>> collectionFactory,
+                    ? super T, ClassMemberEventSubscriber<T, Method>>> collectionFactory,
             final @NonNull EventMethodDeducer<? super T> methodDeducer,
             final @Nullable Collection<? extends Predicate<Method>> filters) {
         // allocates a new collector using the default subscriber factory
@@ -149,7 +155,7 @@ public final class EventProcessors {
     @SuppressWarnings("unchecked")
     public static <T extends Event, E extends ClassMemberEventSubscriber<T, Method>>
     SubscriberCollector<E> newMethodCollector(
-            final @NonNull Supplier<@NonNull SubscriberCollection<? super T, ? super E>> collectionFactory,
+            final @NonNull Supplier<@NonNull SubscriberCollection<? super T, E>> collectionFactory,
             final @NonNull MethodSubscriberFactory<T, ? extends E> subscriberFactory,
             final @Nullable Collection<? extends Predicate<Method>> filters) {
         var emd = (EventMethodDeducer<? super T>) EventMethodDeducer.FIRST_PARAMETER;
@@ -171,7 +177,7 @@ public final class EventProcessors {
     @NonNull
     public static <T extends Event, E extends ClassMemberEventSubscriber<T, Method>>
     SubscriberCollector<E> newMethodCollector(
-            final @NonNull Supplier<@NonNull SubscriberCollection<? super T, ? super E>> collectionFactory,
+            final @NonNull Supplier<@NonNull SubscriberCollection<? super T, E>> collectionFactory,
             final @NonNull EventMethodDeducer<? super T> methodDeducer,
             final @NonNull MethodSubscriberFactory<T, ? extends E> subscriberFactory,
             final @Nullable Collection<? extends Predicate<Method>> filters) {
@@ -181,10 +187,11 @@ public final class EventProcessors {
         return listener -> {
             final Function<Method, ? extends EventCallback<? super T>>
                     pNewEventCallback = methodDeducer::newEventCallback;
-            SubscriberCollection<?, ? super E> out = collectionFactory.get();
+            SubscriberCollection<?, E> out = collectionFactory.get();
             Preconditions.checkNotNull(out);
             Class<? extends Listener> type = listener.getClass();
-            l0: for (Method method : type.getDeclaredMethods()) {
+            l0:
+            for (Method method : type.getDeclaredMethods()) {
                 if (!methodDeducer.isEventMethod(method)) continue;
                 if (filters != null && !filters.isEmpty()) {
                     for (var filter : filters) {
