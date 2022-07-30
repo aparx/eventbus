@@ -1,7 +1,6 @@
 package io.github.aparx.eventbus.processor;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
 import io.github.aparx.eventbus.Event;
 import io.github.aparx.eventbus.Listener;
 import io.github.aparx.eventbus.subscriber.EventCallback;
@@ -18,6 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -45,8 +45,7 @@ public final class EventProcessors {
     }
 
     @NonNull
-    public static EventPublisher newPublisher(
-            boolean polymorphic) {
+    public static EventPublisher newPublisher(boolean polymorphic) {
         return newPublisher(polymorphic, null);
     }
 
