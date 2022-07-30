@@ -241,17 +241,16 @@ public final class SubscriberCollections {
                 }
             }
             if (groups.isEmpty()) return false;
+            boolean rv = false;
             // Iterate over the groups scheduled for removal and batch
             // remove their contained values within this map.
-            var iterator = groups.asMap().entrySet().iterator();
-            for (boolean rv = false;;) {
-                Map.Entry<Class<? extends T>, Collection<E>> e = iterator.next();
+            Map<Class<? extends T>, Collection<E>> map = groups.asMap();
+            for (Map.Entry<Class<? extends T>, Collection<E>> e : map.entrySet()) {
                 if (!delegate.containsKey(e.getKey())) continue;
                 Collection<E> v = delegate.get(e.getKey());
                 rv |= v.removeAll(e.getValue());
-                if (!iterator.hasNext())
-                    return rv;
             }
+            return rv;
         }
 
         @Override
