@@ -1,4 +1,4 @@
-package io.github.aparx.eventbus.processor;
+package io.github.aparx.eventbus.processors;
 
 import io.github.aparx.eventbus.Listener;
 import io.github.aparx.eventbus.subscriber.EventSubscriber;

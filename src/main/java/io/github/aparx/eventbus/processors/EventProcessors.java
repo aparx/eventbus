@@ -1,9 +1,8 @@
-package io.github.aparx.eventbus.processor;
+package io.github.aparx.eventbus.processors;
 
 import com.google.common.base.Preconditions;
 import io.github.aparx.eventbus.Event;
 import io.github.aparx.eventbus.Listener;
-import io.github.aparx.eventbus.audience.ListenerHandle;
 import io.github.aparx.eventbus.subscriber.EventCallback;
 import io.github.aparx.eventbus.subscriber.EventSubscriber;
 import io.github.aparx.eventbus.subscriber.EventSubscribers;
