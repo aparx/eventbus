@@ -8,7 +8,7 @@ package io.github.aparx.eventbus;
  * class itself cannot be instantiated without inheriting it, in order to
  * avoid dummy objects being allocated. The class is also usable in order
  * to provide type-safety without having to rely on third-parties on
- * actually passing the right object. It will hint the developers that a
+ * actually passing the right object. It may hint the developers that a
  * {@code Listener} cannot be an {@code Event} simultaneously, thus
  * creating the possibility for static analysis tools to identify an
  * inheritance-meaning-clash.
