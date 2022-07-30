@@ -2,7 +2,7 @@ package io.github.aparx.eventbus.processor;
 
 import io.github.aparx.eventbus.Listener;
 import io.github.aparx.eventbus.subscriber.EventSubscriber;
-import io.github.aparx.eventbus.subscriber.SubscriberCollection;
+import io.github.aparx.eventbus.subscriber.collection.SubscriberCollection;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -13,6 +13,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @FunctionalInterface
 public interface SubscriberCollector<E extends EventSubscriber<?>> {
     @NonNull
-    SubscriberCollection<?, ? extends E> collect(@NonNull Listener listener);
+    SubscriberCollection<?, ? super E> collect(@NonNull Listener listener);
 
 }

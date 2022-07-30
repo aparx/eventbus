@@ -57,8 +57,11 @@ public interface EventMethodDeducer<T extends Event> {
 
             @Override
             public @NonNull EventCallback<? super T> newEventCallback(@NonNull Method method) {
-                return (origin, event) -> method.invoke(origin.getListener(),
-                        argsFactory.create(origin, event));
+                return (origin, event) -> {
+                    method.trySetAccessible();
+                    method.invoke(origin.getListener(),
+                            argsFactory.create(origin, event));
+                };
             }
         };
     }

@@ -1,9 +1,10 @@
-package io.github.aparx.eventbus.subscriber;
+package io.github.aparx.eventbus.subscriber.collection;
 
 import com.google.common.collect.Multimap;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.CompatibleWith;
 import io.github.aparx.eventbus.Event;
+import io.github.aparx.eventbus.subscriber.EventSubscriber;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
 

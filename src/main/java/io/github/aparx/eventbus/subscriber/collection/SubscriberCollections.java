@@ -1,9 +1,10 @@
-package io.github.aparx.eventbus.subscriber;
+package io.github.aparx.eventbus.subscriber.collection;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.github.aparx.eventbus.Event;
+import io.github.aparx.eventbus.subscriber.EventSubscriber;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -123,7 +124,10 @@ public final class SubscriberCollections {
 
     /* SubscriberCollection class definition */
 
-    static class BaseCollection<
+
+    // TODO in the future many implementations here might be moved
+    //   to a separate public class implementation
+    private static class BaseCollection<
             T extends Event,
             E extends EventSubscriber<? extends T>>
             implements SubscriberCollection<T, E> {
@@ -216,6 +220,8 @@ public final class SubscriberCollections {
 
         @Override
         public boolean containsAll(@NonNull Collection<?> c) {
+            if (c.isEmpty() ^ isEmpty())
+                return false;
             for (Object o : c) {
                 if (!contains(o))
                     return false;
@@ -225,6 +231,7 @@ public final class SubscriberCollections {
 
         @Override
         public boolean addAll(@NonNull Collection<? extends E> c) {
+            if (c.isEmpty()) return false;
             boolean rv = false;
             for (E e : c) {
                 rv |= add(e);
@@ -289,7 +296,7 @@ public final class SubscriberCollections {
         }
     }
 
-    static class SortableCollection<
+    private static class SortableCollection<
             T extends Event,
             E extends EventSubscriber<? extends T>>
             extends BaseCollection<T, E>

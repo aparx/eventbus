@@ -2,7 +2,7 @@ package io.github.aparx.eventbus.audience;
 
 import com.google.common.base.Preconditions;
 import io.github.aparx.eventbus.Listener;
-import io.github.aparx.eventbus.subscriber.SubscriberCollection;
+import io.github.aparx.eventbus.subscriber.collection.SubscriberCollection;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**

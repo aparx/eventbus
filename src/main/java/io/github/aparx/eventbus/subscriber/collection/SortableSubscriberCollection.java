@@ -1,7 +1,8 @@
-package io.github.aparx.eventbus.subscriber;
+package io.github.aparx.eventbus.subscriber.collection;
 
 import com.google.common.base.Preconditions;
 import io.github.aparx.eventbus.Event;
+import io.github.aparx.eventbus.subscriber.EventSubscriber;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Comparator;
