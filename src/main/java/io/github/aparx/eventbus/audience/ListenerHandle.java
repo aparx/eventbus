@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * @author aparx (Vinzent Zeband)
  * @version 16:13 CET, 27.07.2022
+ * @see Listener
  * @since 1.0
  */
 public class ListenerHandle {
@@ -25,7 +26,7 @@ public class ListenerHandle {
         this.subscribers = Preconditions.checkNotNull(subscribers);
     }
 
-    public final @NonNull Listener getListener() {
+    public final @NonNull Listener getOwner() {
         return listener;
     }
 

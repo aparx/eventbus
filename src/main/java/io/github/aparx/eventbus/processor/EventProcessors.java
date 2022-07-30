@@ -3,6 +3,7 @@ package io.github.aparx.eventbus.processor;
 import com.google.common.base.Preconditions;
 import io.github.aparx.eventbus.Event;
 import io.github.aparx.eventbus.Listener;
+import io.github.aparx.eventbus.audience.ListenerHandle;
 import io.github.aparx.eventbus.subscriber.EventCallback;
 import io.github.aparx.eventbus.subscriber.EventSubscriber;
 import io.github.aparx.eventbus.subscriber.EventSubscribers;
@@ -31,7 +32,7 @@ public final class EventProcessors {
         throw new AssertionError();
     }
 
-    /* EventPublisher implementation and factory methods */
+    /* EventPublisher factory methods */
 
     @NonNull
     public static EventPublisher newPolymorphicPublisher() {
@@ -48,6 +49,8 @@ public final class EventProcessors {
     public static EventPublisher newPublisher(boolean polymorphic) {
         return newPublisher(polymorphic, null);
     }
+
+    /* EventPublisher default implementation */
 
     @NonNull
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -89,7 +92,7 @@ public final class EventProcessors {
         };
     }
 
-    /* SubscriberCollector implementation and factory methods */
+    /* SubscriberCollector factory methods */
 
     private static final Supplier<?> DEFAULT_COLLECTION_FACTORY
             = EventProcessors::newTypeErasedSubscriberCollection;
@@ -162,6 +165,8 @@ public final class EventProcessors {
         return newMethodCollector(getCollectionFactory(),
                 methodDeducer, subscriberFactory, filters);
     }
+
+    /* SubscriberCollector default implementation */
 
     @NonNull
     public static <T extends Event, E extends ClassMemberEventSubscriber<T, Method>>

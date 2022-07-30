@@ -113,7 +113,7 @@ public class EventBus implements ListenerRegister {
 
     @Override
     public ListenerHandle putHandle(@NonNull ListenerHandle handle) {
-        Listener listener = handle.getListener();
+        Listener listener = handle.getOwner();
         Preconditions.checkNotNull(listener);
         synchronized (handleTable) {
             return handleTable.put(listener, handle);

@@ -28,7 +28,7 @@ public interface ListenerRegister extends Iterable<ListenerHandle> {
     ListenerHandle putHandle(@NonNull ListenerHandle handle);
 
     default boolean hasHandle(@NonNull ListenerHandle handle) {
-        return isRegistered(handle.getListener());
+        return isRegistered(handle.getOwner());
     }
 
     default boolean isEmpty() {
