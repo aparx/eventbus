@@ -16,12 +16,12 @@ The documentation follows.
 * A method within `TestListener` must have one parameter only, being of type `Event`<br>and not static.
 As initially stated, ***everything*** can be customized and is modular.
 
-## Download
-The downloads follow with the first public release.
-
 ## WARNING❗
 This library is not production nor test or alpha ready at all. 
 Not even core functions are implemented yet.
 <br/>Please wait until a stable alpha or even version is pre-released.
 <br/>You are ensured to encounter bugs very quickly.
 <br/>Also the documentations are completely missing yet.
+
+## Download
+The downloads follow with the first public release.
